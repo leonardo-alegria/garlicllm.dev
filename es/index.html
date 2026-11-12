@@ -551,7 +551,7 @@ figcaption b{font:600 1.04em var(--mono);color:var(--ink);margin-right:.3em}
     </div>
   </div>
   <p class="colophon">
-    <span>Sin cookies ni rastreadores. No se carga nada de otros sitios.</span>
+    <span>Sin cookies. Las visitas se cuentan de forma anónima con Cloudflare Web Analytics; no se carga nada más de otros sitios.</span>
     <span>Compuesto en Noto Sans e Inconsolata, dos de las tipografías que usa la app.</span>
   </p>
 </footer>
@@ -572,9 +572,23 @@ document.querySelectorAll('button.copy').forEach(function (b) {
 });
 </script>
 
-<!-- OPTIONAL: Cloudflare Web Analytics (no cookies). Uncomment and paste your token.
-     If you turn it on, also edit the "Sin cookies ni rastreadores" line in the footer.
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "[cloudflare-token]"}'></script>
--->
+<script>
+// Cloudflare Web Analytics: counts visits without cookies. Opening the site once with ?noseguir stops
+// counting visits from that browser (for the site's owner); ?seguir turns counting back on.
+(function () {
+  var k = 'garlic-no-analytics', q = location.search;
+  try {
+    if (/[?&]noseguir\b/.test(q)) localStorage.setItem(k, '1');
+    if (/[?&]seguir\b/.test(q)) localStorage.removeItem(k);
+    if (/[?&](no)?seguir\b/.test(q)) history.replaceState(null, '', location.pathname + location.hash);
+    if (localStorage.getItem(k)) return;
+  } catch (e) {}
+  var s = document.createElement('script');
+  s.defer = true;
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', '{"token": "bb802cc402f64f65adbb1cc733feab38"}');
+  document.body.appendChild(s);
+})();
+</script>
 </body>
 </html>
